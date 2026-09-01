@@ -13,6 +13,7 @@
 <style>
 /* Global Resets & Typography */
 * { box-sizing: border-box; margin: 0; padding: 0; }
+html { overflow-x: hidden; }
 body { background: #FAFAFB; color: #4A4869; font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; font-weight: 400; line-height: 1.7; }
 h1, h2, h3, h4, h5, h6 { color: #0D0B1E; font-family: 'DM Sans', sans-serif; font-weight: 700; letter-spacing: -0.03em; margin: 0; }
 h1 { font-weight: 800; letter-spacing: -0.045em; line-height: 1.05; }
@@ -127,6 +128,18 @@ html { scroll-behavior: smooth; }
   animation: clipReveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
+.services-heading {
+  transition: opacity 1.6s cubic-bezier(0.16, 1, 0.3, 1), transform 1.6s cubic-bezier(0.16, 1, 0.3, 1), filter 1.6s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform, filter;
+}
+.services-heading.is-exiting {
+  transition-duration: 0.3s;
+}
+.services-panels-layer {
+  transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1), transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
 /* Global Scroll Reveal Rule */
 [data-reveal] {
   opacity: 0;
@@ -137,7 +150,7 @@ html { scroll-behavior: smooth; }
 </style>
 </helmet>
 
-<div ref="{{ rootRef }}" style="position:relative;min-height:100vh;overflow-x:hidden;">
+<div ref="{{ rootRef }}" style="position:relative;min-height:100vh;">
   <div class="noise-bg"></div>
 
   <!-- Navbar -->
@@ -208,31 +221,6 @@ html { scroll-behavior: smooth; }
 
   </section>
 
-  <!-- Transition BG Section (Empty) -->
-  <section style="position:relative; min-height:100dvh; overflow:hidden; background-color:#000000; background-image:radial-gradient(circle at 85% 15%, rgba(90,63,212,0.55) 0%, transparent 45%), radial-gradient(circle at 15% 85%, rgba(90,63,212,0.4) 0%, transparent 45%), radial-gradient(circle at 60% 60%, rgba(123,92,240,0.15) 0%, transparent 35%); border-top: 1px solid rgba(123,92,240,0.3);">
-    <div class="logo-3d-container">
-      <div class="logo-3d-model">
-        <!-- 3D extrusion layers -->
-        <img src="assets/rithera-icon.png?v=3" class="logo-3d-layer" style="transform: translateZ(0px);" />
-        <img src="assets/rithera-icon.png?v=3" class="logo-3d-layer" style="transform: translateZ(2px);" />
-        <img src="assets/rithera-icon.png?v=3" class="logo-3d-layer" style="transform: translateZ(4px);" />
-        <img src="assets/rithera-icon.png?v=3" class="logo-3d-layer" style="transform: translateZ(6px);" />
-        <img src="assets/rithera-icon.png?v=3" class="logo-3d-layer" style="transform: translateZ(8px);" />
-        <img src="assets/rithera-icon.png?v=3" class="logo-3d-layer" style="transform: translateZ(10px);" />
-        <img src="assets/rithera-icon.png?v=3" class="logo-3d-layer" style="transform: translateZ(12px);" />
-        <img src="assets/rithera-icon.png?v=3" class="logo-3d-layer" style="transform: translateZ(14px);" />
-        <img src="assets/rithera-icon.png?v=3" class="logo-3d-layer" style="transform: translateZ(16px);" />
-        <img src="assets/rithera-icon.png?v=3" class="logo-3d-layer" style="transform: translateZ(18px);" />
-        <img src="assets/rithera-icon.png?v=3" class="logo-3d-layer" style="transform: translateZ(20px);" />
-        <img src="assets/rithera-icon.png?v=3" class="logo-3d-layer" style="transform: translateZ(22px);" />
-        <img src="assets/rithera-icon.png?v=3" class="logo-3d-layer" style="transform: translateZ(24px);" />
-        <img src="assets/rithera-icon.png?v=3" class="logo-3d-layer" style="transform: translateZ(26px);" />
-        <img src="assets/rithera-icon.png?v=3" class="logo-3d-layer" style="transform: translateZ(28px);" />
-        <img src="assets/rithera-icon.png?v=3" class="logo-3d-layer" style="transform: translateZ(30px);" />
-      </div>
-    </div>
-  </section>
-
   <!-- Problem Section -->
   <section class="section-pad" style="background:#FFFFFF; position:relative; z-index:10;">
     <div style="max-width:1000px;margin:0 auto;text-align:center;">
@@ -271,125 +259,145 @@ html { scroll-behavior: smooth; }
     </div>
   </section>
 
-  <!-- Services Section -->
-  <section id="services" class="section-pad" style="background:#F8F7FF;">
-    <div style="max-width:1100px;margin:0 auto;">
-      <div data-reveal class="eyebrow-text">What We Build</div>
-      <h2 data-reveal style="font-size:52px;margin-top:16px;">Five capabilities.<br/>One operational outcome.</h2>
+  <!-- Services Pin Section (horizontal scroll, locked in gradient bg) -->
+  <section id="services" style="position:relative; height:710vh; background-color:#000000; background-image:radial-gradient(circle at 85% 15%, rgba(90,63,212,0.55) 0%, transparent 45%), radial-gradient(circle at 15% 85%, rgba(90,63,212,0.4) 0%, transparent 45%), radial-gradient(circle at 60% 60%, rgba(123,92,240,0.15) 0%, transparent 35%); border-top: 1px solid rgba(123,92,240,0.3);">
+    <div style="position:sticky;top:0;left:0;height:100dvh;width:100%;overflow:hidden;">
 
-      <div style="margin-top:80px;display:flex;flex-direction:column;gap:40px;">
+      <!-- Intro Heading Layer -->
+      <div id="services-heading" class="services-heading {{ headingExitClass }}" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 24px;pointer-events:none;opacity:{{ headingOpacity }};transform:{{ headingTransform }};filter:{{ headingFilter }};">
+        <div>
+          <div class="eyebrow-text" style="color:#B8A6FF;font-size:13px;">What We Build</div>
+          <h2 style="font-size:{{ headingFontSize }};margin-top:24px;color:#FFFFFF;">Five capabilities.<br/>One operational outcome.</h2>
+        </div>
+      </div>
+
+      <!-- Panels Layer -->
+      <div class="services-panels-layer" style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;opacity:{{ panelsOpacity }};transform:translateY({{ panelsTranslateY }}) scale({{ panelsScale }});pointer-events:{{ panelsPointerEvents }};">
+
+      <div style="display:flex;width:500vw;height:60%;transform:translateX({{ servicesTrackX }});will-change:transform;">
+
         <!-- Service 1: AI Agents -->
-        <div data-reveal style="display:flex;flex-direction:{{ serviceRowDir }};align-items:center;gap:64px;padding-bottom:64px;border-bottom:1px solid rgba(123,92,240,0.15);">
-          <div style="flex:1;">
-            <div class="eyebrow-text" style="color:#141420;opacity:0.4;">01</div>
-            <h3 style="font-size:32px;margin-top:12px;">AI Agents</h3>
-            <p style="font-size:16px;margin-top:16px;max-width:440px;">Autonomous systems that think, decide, and act on behalf of your team — without constant human input.</p>
-            <a href="#contact" style="display:inline-flex;align-items:center;gap:6px;font-size:15px;font-weight:600;margin-top:24px;">Learn More <span style="transition:transform 0.2s ease;">→</span></a>
-          </div>
-          <div style="flex:1;display:flex;justify-content:center;width:100%;">
-            <div style="width:100%;max-width:420px;aspect-ratio:1.4;background:#FFFFFF;border-radius:16px;border:1px solid rgba(123,92,240,0.2);box-shadow:0 8px 30px rgba(123,92,240,0.06);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
-              <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(circle at center, rgba(123,92,240,0.08) 0%, transparent 60%);"></div>
-              <!-- Pulse Core -->
-              <div style="position:relative;z-index:1;width:60px;height:60px;background:#7B5CF0;border-radius:50%;display:flex;align-items:center;justify-content:center;animation:heartbeat 2.5s infinite ease-in-out;">
-                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.8"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        <div style="width:100vw;height:100%;display:flex;align-items:center;justify-content:center;padding:0 24px;flex-shrink:0;">
+          <div style="max-width:1100px;width:100%;display:flex;align-items:center;gap:64px;">
+            <div style="flex:1;">
+              <div class="eyebrow-text" style="color:#7B5CF0;">01</div>
+              <h3 style="font-size:32px;margin-top:12px;color:#FFFFFF;">AI Agents</h3>
+              <p style="font-size:16px;margin-top:16px;max-width:440px;color:#C7C3DA;">Autonomous systems that think, decide, and act on behalf of your team — without constant human input.</p>
+              <a href="#contact" style="display:inline-flex;align-items:center;gap:6px;font-size:15px;font-weight:600;margin-top:24px;color:#B8A6FF;">Learn More <span style="transition:transform 0.2s ease;">→</span></a>
+            </div>
+            <div style="flex:1;display:flex;justify-content:center;width:100%;">
+              <div style="width:100%;max-width:420px;aspect-ratio:1.4;background:#FFFFFF;border-radius:16px;border:1px solid rgba(123,92,240,0.2);box-shadow:0 8px 30px rgba(123,92,240,0.2);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
+                <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(circle at center, rgba(123,92,240,0.08) 0%, transparent 60%);"></div>
+                <!-- Pulse Core -->
+                <div style="position:relative;z-index:1;width:60px;height:60px;background:#7B5CF0;border-radius:50%;display:flex;align-items:center;justify-content:center;animation:heartbeat 2.5s infinite ease-in-out;">
+                  <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.8"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                </div>
+                <div style="position:absolute;z-index:0;width:80px;height:80px;border:1px solid #7B5CF0;border-radius:50%;animation:heartbeat 2.5s infinite ease-in-out;animation-delay:0.1s;opacity:0.5;"></div>
+                <div style="position:absolute;z-index:0;width:100px;height:100px;border:1px solid #7B5CF0;border-radius:50%;animation:heartbeat 2.5s infinite ease-in-out;animation-delay:0.2s;opacity:0.2;"></div>
               </div>
-              <div style="position:absolute;z-index:0;width:80px;height:80px;border:1px solid #7B5CF0;border-radius:50%;animation:heartbeat 2.5s infinite ease-in-out;animation-delay:0.1s;opacity:0.5;"></div>
-              <div style="position:absolute;z-index:0;width:100px;height:100px;border:1px solid #7B5CF0;border-radius:50%;animation:heartbeat 2.5s infinite ease-in-out;animation-delay:0.2s;opacity:0.2;"></div>
             </div>
           </div>
         </div>
 
         <!-- Service 2: Workflows -->
-        <div data-reveal style="display:flex;flex-direction:{{ serviceRowDirRev }};align-items:center;gap:64px;padding-bottom:64px;border-bottom:1px solid rgba(123,92,240,0.15);">
-          <div style="flex:1;">
-            <div class="eyebrow-text" style="color:#141420;opacity:0.4;">02</div>
-            <h3 style="font-size:32px;margin-top:12px;">Workflow Automations</h3>
-            <p style="font-size:16px;margin-top:16px;max-width:440px;">End-to-end automation of the repetitive processes that drain time and introduce error. Built around how you actually work.</p>
-            <a href="#contact" style="display:inline-flex;align-items:center;gap:6px;font-size:15px;font-weight:600;margin-top:24px;">Learn More <span>→</span></a>
-          </div>
-          <div style="flex:1;display:flex;justify-content:center;width:100%;">
-            <div style="width:100%;max-width:420px;aspect-ratio:1.4;background:#FFFFFF;border-radius:16px;border:1px solid rgba(123,92,240,0.2);box-shadow:0 8px 30px rgba(123,92,240,0.06);display:flex;align-items:center;justify-content:center;gap:12px;padding:24px;">
-              <!-- Workflow Chain -->
-              <div style="width:48px;height:48px;border-radius:12px;background:#F8F7FF;border:1px solid #7B5CF0;display:flex;align-items:center;justify-content:center;animation:float 3s ease-in-out infinite;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7B5CF0" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></div>
-              <div style="height:2px;flex:1;background:linear-gradient(90deg, #7B5CF0, #E4E4EE);position:relative;"><div style="position:absolute;top:-4px;left:50%;width:10px;height:10px;background:#7B5CF0;border-radius:50%;transform:translateX(-50%);"></div></div>
-              <div style="width:48px;height:48px;border-radius:12px;background:#F8F7FF;border:1px solid #7B5CF0;display:flex;align-items:center;justify-content:center;animation:float 3s ease-in-out infinite;animation-delay:0.5s;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7B5CF0" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg></div>
-              <div style="height:2px;flex:1;background:linear-gradient(90deg, #E4E4EE, #7B5CF0);position:relative;"><div style="position:absolute;top:-4px;left:50%;width:10px;height:10px;background:#7B5CF0;border-radius:50%;transform:translateX(-50%);"></div></div>
-              <div style="width:48px;height:48px;border-radius:12px;background:#7B5CF0;display:flex;align-items:center;justify-content:center;animation:float 3s ease-in-out infinite;animation-delay:1s;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg></div>
+        <div style="width:100vw;height:100%;display:flex;align-items:center;justify-content:center;padding:0 24px;flex-shrink:0;">
+          <div style="max-width:1100px;width:100%;display:flex;align-items:center;gap:64px;">
+            <div style="flex:1;">
+              <div class="eyebrow-text" style="color:#7B5CF0;">02</div>
+              <h3 style="font-size:32px;margin-top:12px;color:#FFFFFF;">Workflow Automations</h3>
+              <p style="font-size:16px;margin-top:16px;max-width:440px;color:#C7C3DA;">End-to-end automation of the repetitive processes that drain time and introduce error. Built around how you actually work.</p>
+              <a href="#contact" style="display:inline-flex;align-items:center;gap:6px;font-size:15px;font-weight:600;margin-top:24px;color:#B8A6FF;">Learn More <span>→</span></a>
+            </div>
+            <div style="flex:1;display:flex;justify-content:center;width:100%;">
+              <div style="width:100%;max-width:420px;aspect-ratio:1.4;background:#FFFFFF;border-radius:16px;border:1px solid rgba(123,92,240,0.2);box-shadow:0 8px 30px rgba(123,92,240,0.2);display:flex;align-items:center;justify-content:center;gap:12px;padding:24px;">
+                <!-- Workflow Chain -->
+                <div style="width:48px;height:48px;border-radius:12px;background:#F8F7FF;border:1px solid #7B5CF0;display:flex;align-items:center;justify-content:center;animation:float 3s ease-in-out infinite;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7B5CF0" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></div>
+                <div style="height:2px;flex:1;background:linear-gradient(90deg, #7B5CF0, #E4E4EE);position:relative;"><div style="position:absolute;top:-4px;left:50%;width:10px;height:10px;background:#7B5CF0;border-radius:50%;transform:translateX(-50%);"></div></div>
+                <div style="width:48px;height:48px;border-radius:12px;background:#F8F7FF;border:1px solid #7B5CF0;display:flex;align-items:center;justify-content:center;animation:float 3s ease-in-out infinite;animation-delay:0.5s;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7B5CF0" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg></div>
+                <div style="height:2px;flex:1;background:linear-gradient(90deg, #E4E4EE, #7B5CF0);position:relative;"><div style="position:absolute;top:-4px;left:50%;width:10px;height:10px;background:#7B5CF0;border-radius:50%;transform:translateX(-50%);"></div></div>
+                <div style="width:48px;height:48px;border-radius:12px;background:#7B5CF0;display:flex;align-items:center;justify-content:center;animation:float 3s ease-in-out infinite;animation-delay:1s;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg></div>
+              </div>
             </div>
           </div>
         </div>
 
         <!-- Service 3: Voice -->
-        <div data-reveal style="display:flex;flex-direction:{{ serviceRowDir }};align-items:center;gap:64px;padding-bottom:64px;border-bottom:1px solid rgba(123,92,240,0.15);">
-          <div style="flex:1;">
-            <div class="eyebrow-text" style="color:#141420;opacity:0.4;">03</div>
-            <h3 style="font-size:32px;margin-top:12px;">Voice AI Agents</h3>
-            <p style="font-size:16px;margin-top:16px;max-width:440px;">Intelligent voice systems for customer-facing support, internal operations, and anywhere human voice has been the only option. Available 24/7.</p>
-            <a href="#contact" style="display:inline-flex;align-items:center;gap:6px;font-size:15px;font-weight:600;margin-top:24px;">Learn More <span>→</span></a>
-          </div>
-          <div style="flex:1;display:flex;justify-content:center;width:100%;">
-            <div style="width:100%;max-width:420px;aspect-ratio:1.4;background:#141420;border-radius:16px;box-shadow:0 12px 40px rgba(13,11,30,0.2);display:flex;align-items:center;justify-content:center;gap:6px;">
-              <!-- Voice Waveform -->
-              <div style="width:8px;height:24px;background:#7B5CF0;border-radius:4px;animation:waveform 1s ease-in-out infinite alternate;animation-delay:0s;"></div>
-              <div style="width:8px;height:48px;background:#9B7FF4;border-radius:4px;animation:waveform 1.1s ease-in-out infinite alternate;animation-delay:0.2s;"></div>
-              <div style="width:8px;height:32px;background:#FFFFFF;border-radius:4px;animation:waveform 0.9s ease-in-out infinite alternate;animation-delay:0.4s;"></div>
-              <div style="width:8px;height:64px;background:#7B5CF0;border-radius:4px;animation:waveform 1.2s ease-in-out infinite alternate;animation-delay:0.1s;"></div>
-              <div style="width:8px;height:24px;background:#9B7FF4;border-radius:4px;animation:waveform 1s ease-in-out infinite alternate;animation-delay:0.3s;"></div>
+        <div style="width:100vw;height:100%;display:flex;align-items:center;justify-content:center;padding:0 24px;flex-shrink:0;">
+          <div style="max-width:1100px;width:100%;display:flex;align-items:center;gap:64px;">
+            <div style="flex:1;">
+              <div class="eyebrow-text" style="color:#7B5CF0;">03</div>
+              <h3 style="font-size:32px;margin-top:12px;color:#FFFFFF;">Voice AI Agents</h3>
+              <p style="font-size:16px;margin-top:16px;max-width:440px;color:#C7C3DA;">Intelligent voice systems for customer-facing support, internal operations, and anywhere human voice has been the only option. Available 24/7.</p>
+              <a href="#contact" style="display:inline-flex;align-items:center;gap:6px;font-size:15px;font-weight:600;margin-top:24px;color:#B8A6FF;">Learn More <span>→</span></a>
+            </div>
+            <div style="flex:1;display:flex;justify-content:center;width:100%;">
+              <div style="width:100%;max-width:420px;aspect-ratio:1.4;background:#141420;border-radius:16px;border:1px solid rgba(123,92,240,0.3);box-shadow:0 12px 40px rgba(123,92,240,0.15);display:flex;align-items:center;justify-content:center;gap:6px;">
+                <!-- Voice Waveform -->
+                <div style="width:8px;height:24px;background:#7B5CF0;border-radius:4px;animation:waveform 1s ease-in-out infinite alternate;animation-delay:0s;"></div>
+                <div style="width:8px;height:48px;background:#9B7FF4;border-radius:4px;animation:waveform 1.1s ease-in-out infinite alternate;animation-delay:0.2s;"></div>
+                <div style="width:8px;height:32px;background:#FFFFFF;border-radius:4px;animation:waveform 0.9s ease-in-out infinite alternate;animation-delay:0.4s;"></div>
+                <div style="width:8px;height:64px;background:#7B5CF0;border-radius:4px;animation:waveform 1.2s ease-in-out infinite alternate;animation-delay:0.1s;"></div>
+                <div style="width:8px;height:24px;background:#9B7FF4;border-radius:4px;animation:waveform 1s ease-in-out infinite alternate;animation-delay:0.3s;"></div>
+              </div>
             </div>
           </div>
         </div>
 
         <!-- Service 4: Multi-Agent -->
-        <div data-reveal style="display:flex;flex-direction:{{ serviceRowDirRev }};align-items:center;gap:64px;padding-bottom:64px;border-bottom:1px solid rgba(123,92,240,0.15);">
-          <div style="flex:1;">
-            <div class="eyebrow-text" style="color:#141420;opacity:0.4;">04</div>
-            <h3 style="font-size:32px;margin-top:12px;">Multi-Agent Systems</h3>
-            <p style="font-size:16px;margin-top:16px;max-width:440px;">Coordinated AI architectures where multiple agents collaborate across complex, multi-step operations. Built for problems a single tool cannot solve.</p>
-            <a href="#contact" style="display:inline-flex;align-items:center;gap:6px;font-size:15px;font-weight:600;margin-top:24px;">Learn More <span>→</span></a>
-          </div>
-          <div style="flex:1;display:flex;justify-content:center;width:100%;">
-            <div style="width:100%;max-width:420px;aspect-ratio:1.4;background:#FFFFFF;border-radius:16px;border:1px solid rgba(123,92,240,0.2);box-shadow:0 8px 30px rgba(123,92,240,0.06);position:relative;">
-              <svg width="100%" height="100%" viewBox="0 0 200 140" fill="none">
-                <!-- Lines -->
-                <path d="M100 70 L40 40 M100 70 L160 40 M100 70 L40 100 M100 70 L160 100 M40 40 L40 100" stroke="#E4E4EE" stroke-width="2" stroke-dasharray="4"/>
-                <path d="M100 70 L160 100" stroke="#7B5CF0" stroke-width="2" class="network-line" style="stroke-dasharray: 100; stroke-dashoffset: 100; animation: drawLine 2s forwards infinite;"/>
-                <!-- Nodes -->
-                <circle cx="100" cy="70" r="12" fill="#7B5CF0"/>
-                <circle cx="40" cy="40" r="8" fill="#141420"/>
-                <circle cx="160" cy="40" r="8" fill="#141420"/>
-                <circle cx="40" cy="100" r="8" fill="#141420"/>
-                <circle cx="160" cy="100" r="10" fill="#7B5CF0" style="animation: pulseGlow 2s infinite;"/>
-              </svg>
-              <style>
-                @keyframes drawLine { 0% { stroke-dashoffset: 100; } 50%, 100% { stroke-dashoffset: 0; } }
-              </style>
+        <div style="width:100vw;height:100%;display:flex;align-items:center;justify-content:center;padding:0 24px;flex-shrink:0;">
+          <div style="max-width:1100px;width:100%;display:flex;align-items:center;gap:64px;">
+            <div style="flex:1;">
+              <div class="eyebrow-text" style="color:#7B5CF0;">04</div>
+              <h3 style="font-size:32px;margin-top:12px;color:#FFFFFF;">Multi-Agent Systems</h3>
+              <p style="font-size:16px;margin-top:16px;max-width:440px;color:#C7C3DA;">Coordinated AI architectures where multiple agents collaborate across complex, multi-step operations. Built for problems a single tool cannot solve.</p>
+              <a href="#contact" style="display:inline-flex;align-items:center;gap:6px;font-size:15px;font-weight:600;margin-top:24px;color:#B8A6FF;">Learn More <span>→</span></a>
+            </div>
+            <div style="flex:1;display:flex;justify-content:center;width:100%;">
+              <div style="width:100%;max-width:420px;aspect-ratio:1.4;background:#FFFFFF;border-radius:16px;border:1px solid rgba(123,92,240,0.2);box-shadow:0 8px 30px rgba(123,92,240,0.2);position:relative;">
+                <svg width="100%" height="100%" viewBox="0 0 200 140" fill="none">
+                  <!-- Lines -->
+                  <path d="M100 70 L40 40 M100 70 L160 40 M100 70 L40 100 M100 70 L160 100 M40 40 L40 100" stroke="#E4E4EE" stroke-width="2" stroke-dasharray="4"/>
+                  <path d="M100 70 L160 100" stroke="#7B5CF0" stroke-width="2" class="network-line" style="stroke-dasharray: 100; stroke-dashoffset: 100; animation: drawLine 2s forwards infinite;"/>
+                  <!-- Nodes -->
+                  <circle cx="100" cy="70" r="12" fill="#7B5CF0"/>
+                  <circle cx="40" cy="40" r="8" fill="#141420"/>
+                  <circle cx="160" cy="40" r="8" fill="#141420"/>
+                  <circle cx="40" cy="100" r="8" fill="#141420"/>
+                  <circle cx="160" cy="100" r="10" fill="#7B5CF0" style="animation: pulseGlow 2s infinite;"/>
+                </svg>
+                <style>
+                  @keyframes drawLine { 0% { stroke-dashoffset: 100; } 50%, 100% { stroke-dashoffset: 0; } }
+                </style>
+              </div>
             </div>
           </div>
         </div>
 
         <!-- Service 5: Custom Dash -->
-        <div data-reveal style="display:flex;flex-direction:{{ serviceRowDir }};align-items:center;gap:64px;">
-          <div style="flex:1;">
-            <div class="eyebrow-text" style="color:#141420;opacity:0.4;">05</div>
-            <h3 style="font-size:32px;margin-top:12px;">Custom Internal Applications</h3>
-            <p style="font-size:16px;margin-top:16px;max-width:440px;">Purpose-built software designed around each client's specific workflows. Not generic SaaS. Built for the way you operate.</p>
-            <a href="#contact" style="display:inline-flex;align-items:center;gap:6px;font-size:15px;font-weight:600;margin-top:24px;">Learn More <span>→</span></a>
-          </div>
-          <div style="flex:1;display:flex;justify-content:center;width:100%;">
-            <div style="width:100%;max-width:420px;aspect-ratio:1.4;background:#FFFFFF;border-radius:16px;border:1px solid rgba(123,92,240,0.2);box-shadow:0 12px 40px rgba(123,92,240,0.1);padding:16px;display:flex;flex-direction:column;gap:12px;overflow:hidden;">
-              <div style="display:flex;align-items:center;gap:8px;padding-bottom:12px;border-bottom:1px solid #E4E4EE;">
-                <div style="width:10px;height:10px;border-radius:50%;background:#F06A6A;"></div>
-                <div style="width:10px;height:10px;border-radius:50%;background:#F1C40F;"></div>
-                <div style="width:10px;height:10px;border-radius:50%;background:#2ECC71;"></div>
-                <div style="margin-left:auto;width:40%;height:12px;background:#F8F7FF;border-radius:4px;"></div>
-              </div>
-              <div style="display:flex;gap:12px;flex:1;">
-                <div style="width:25%;background:#F8F7FF;border-radius:8px;"></div>
-                <div style="flex:1;display:flex;flex-direction:column;gap:12px;">
-                  <div style="height:30%;background:#F8F7FF;border-radius:8px;display:flex;align-items:center;padding:0 12px;"><div style="width:40%;height:8px;background:#7B5CF0;border-radius:4px;opacity:0.5;"></div></div>
-                  <div style="flex:1;background:linear-gradient(135deg, #F8F7FF, #FFFFFF);border:1px solid #E4E4EE;border-radius:8px;position:relative;overflow:hidden;">
-                    <div style="position:absolute;bottom:0;left:0;width:100%;height:40%;background:linear-gradient(0deg, rgba(123,92,240,0.1) 0%, transparent 100%);"></div>
-                    <svg width="100%" height="100%" viewBox="0 0 100 50" preserveAspectRatio="none" style="position:absolute;bottom:0;"><path d="M0 50 L0 30 Q25 10 50 25 T100 10 L100 50 Z" fill="#7B5CF0" opacity="0.1"/><path d="M0 30 Q25 10 50 25 T100 10" fill="none" stroke="#7B5CF0" stroke-width="2"/></svg>
+        <div style="width:100vw;height:100%;display:flex;align-items:center;justify-content:center;padding:0 24px;flex-shrink:0;">
+          <div style="max-width:1100px;width:100%;display:flex;align-items:center;gap:64px;">
+            <div style="flex:1;">
+              <div class="eyebrow-text" style="color:#7B5CF0;">05</div>
+              <h3 style="font-size:32px;margin-top:12px;color:#FFFFFF;">Custom Internal Applications</h3>
+              <p style="font-size:16px;margin-top:16px;max-width:440px;color:#C7C3DA;">Purpose-built software designed around each client's specific workflows. Not generic SaaS. Built for the way you operate.</p>
+              <a href="#contact" style="display:inline-flex;align-items:center;gap:6px;font-size:15px;font-weight:600;margin-top:24px;color:#B8A6FF;">Learn More <span>→</span></a>
+            </div>
+            <div style="flex:1;display:flex;justify-content:center;width:100%;">
+              <div style="width:100%;max-width:420px;aspect-ratio:1.4;background:#FFFFFF;border-radius:16px;border:1px solid rgba(123,92,240,0.2);box-shadow:0 12px 40px rgba(123,92,240,0.25);padding:16px;display:flex;flex-direction:column;gap:12px;overflow:hidden;">
+                <div style="display:flex;align-items:center;gap:8px;padding-bottom:12px;border-bottom:1px solid #E4E4EE;">
+                  <div style="width:10px;height:10px;border-radius:50%;background:#F06A6A;"></div>
+                  <div style="width:10px;height:10px;border-radius:50%;background:#F1C40F;"></div>
+                  <div style="width:10px;height:10px;border-radius:50%;background:#2ECC71;"></div>
+                  <div style="margin-left:auto;width:40%;height:12px;background:#F8F7FF;border-radius:4px;"></div>
+                </div>
+                <div style="display:flex;gap:12px;flex:1;">
+                  <div style="width:25%;background:#F8F7FF;border-radius:8px;"></div>
+                  <div style="flex:1;display:flex;flex-direction:column;gap:12px;">
+                    <div style="height:30%;background:#F8F7FF;border-radius:8px;display:flex;align-items:center;padding:0 12px;"><div style="width:40%;height:8px;background:#7B5CF0;border-radius:4px;opacity:0.5;"></div></div>
+                    <div style="flex:1;background:linear-gradient(135deg, #F8F7FF, #FFFFFF);border:1px solid #E4E4EE;border-radius:8px;position:relative;overflow:hidden;">
+                      <div style="position:absolute;bottom:0;left:0;width:100%;height:40%;background:linear-gradient(0deg, rgba(123,92,240,0.1) 0%, transparent 100%);"></div>
+                      <svg width="100%" height="100%" viewBox="0 0 100 50" preserveAspectRatio="none" style="position:absolute;bottom:0;"><path d="M0 50 L0 30 Q25 10 50 25 T100 10 L100 50 Z" fill="#7B5CF0" opacity="0.1"/><path d="M0 30 Q25 10 50 25 T100 10" fill="none" stroke="#7B5CF0" stroke-width="2"/></svg>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -398,32 +406,44 @@ html { scroll-behavior: smooth; }
         </div>
 
       </div>
+
+      <!-- Progress Dots -->
+      <div style="display:flex;justify-content:center;gap:10px;margin-top:32px;">
+        <sc-for list="{{ serviceDots }}" as="dot" hint-placeholder-count="5">
+          <div style="width:8px;height:8px;border-radius:50%;background:{{ dot.bg }};transition:background 0.2s ease;"></div>
+        </sc-for>
+      </div>
+
+      </div>
+
     </div>
   </section>
 
-  <!-- How It Works Section -->
-  <section id="how-it-works" class="section-pad" style="background:#FFFFFF;">
-    <div style="max-width:1100px;margin:0 auto;">
-      <h2 data-reveal style="font-size:44px;text-align:center;">From first call to live system.</h2>
+  <!-- How It Works Section (locked in place until the step sequence finishes) -->
+  <section id="how-it-works" style="position:relative;height:420vh;background:#FFFFFF;">
+    <div style="position:sticky;top:0;left:0;height:100dvh;width:100%;display:flex;align-items:center;">
+      <div style="max-width:1100px;margin:0 auto;width:100%;padding:0 24px;">
+        <h2 data-reveal style="font-size:44px;text-align:center;">From first call to live system.</h2>
 
-      <div style="position:relative;margin-top:100px;">
-        <!-- Connecting Line -->
-        <div style="position:absolute;top:24px;left:0;right:0;height:2px;background:#E4E4EE;display:{{ progressBarDisplay }};z-index:0;">
-          <div style="height:100%;background:#7B5CF0;width:{{ scrubProgress }};transition:width 0.1s ease-out;"></div>
-        </div>
-        
-        <div style="display:flex;flex-direction:{{ stepsDir }};gap:48px;position:relative;z-index:1;">
-          <sc-for list="{{ steps }}" as="step" hint-placeholder-count="4">
-            <div data-step-node="{{ $index }}" style="flex:1;">
-              <!-- Node -->
-              <div style="width:48px;height:48px;border-radius:50%;background:#FFFFFF;border:2px solid {{ step.dotBorder }};color:{{ step.dotColor }};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600;transition:all 0.4s ease;box-shadow:{{ step.shadow }};transform:{{ step.scale }};">{{ step.num }}</div>
-              <!-- Text -->
-              <div style="margin-top:24px;opacity:{{ step.textOpacity }};transform:{{ step.textTransform }};transition:all 0.5s ease;">
-                <h4 style="font-size:22px;color:{{ step.titleColor }};">{{ step.title }}</h4>
-                <p style="font-size:15px;margin-top:12px;">{{ step.desc }}</p>
+        <div style="position:relative;margin-top:100px;">
+          <!-- Connecting Line -->
+          <div style="position:absolute;top:24px;left:0;right:0;height:2px;background:#E4E4EE;display:{{ progressBarDisplay }};z-index:0;">
+            <div style="height:100%;background:#7B5CF0;width:{{ scrubProgress }};transition:width 0.1s ease-out;"></div>
+          </div>
+
+          <div style="display:flex;flex-direction:{{ stepsDir }};gap:48px;position:relative;z-index:1;">
+            <sc-for list="{{ steps }}" as="step" hint-placeholder-count="4">
+              <div data-step-node="{{ $index }}" style="flex:1;">
+                <!-- Node -->
+                <div style="width:48px;height:48px;border-radius:50%;background:#FFFFFF;border:2px solid {{ step.dotBorder }};color:{{ step.dotColor }};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600;transition:all 0.4s ease;box-shadow:{{ step.shadow }};transform:{{ step.scale }};">{{ step.num }}</div>
+                <!-- Text -->
+                <div style="margin-top:24px;opacity:{{ step.textOpacity }};transform:{{ step.textTransform }};transition:all 0.5s ease;">
+                  <h4 style="font-size:22px;color:{{ step.titleColor }};">{{ step.title }}</h4>
+                  <p style="font-size:15px;margin-top:12px;">{{ step.desc }}</p>
+                </div>
               </div>
-            </div>
-          </sc-for>
+            </sc-for>
+          </div>
         </div>
       </div>
     </div>
@@ -542,7 +562,10 @@ class Component extends DCLogic {
       mobileMenuOpen: false, 
       scrolled: false, 
       activeSteps: 0,
-      scrubProgress: '0%' 
+      scrubProgress: '0%',
+      scrubProgressNum: 0,
+      servicesProgress: 0,
+      headingEntered: false
     };
     this.rootRef = React.createRef();
     this.navRef = React.createRef();
@@ -557,6 +580,7 @@ class Component extends DCLogic {
     
     this.setupReveal();
     this.setupScrollScrub();
+    this.setupServicesScrub();
     
     // Initialize Particles
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -569,6 +593,8 @@ class Component extends DCLogic {
     window.removeEventListener('resize', this.handleResize);
     window.removeEventListener('scroll', this.handleScroll);
     if (this.scrubListener) window.removeEventListener('scroll', this.scrubListener);
+    if (this.servicesScrubListener) window.removeEventListener('scroll', this.servicesScrubListener);
+    clearTimeout(this._entranceGateTimer);
     if (this.revealObserver) this.revealObserver.disconnect();
     if (this.cancelHeroParticles) this.cancelHeroParticles();
     if (this.cancelCtaParticles) this.cancelCtaParticles();
@@ -593,23 +619,25 @@ class Component extends DCLogic {
     const handleScrollScrub = () => {
       const section = document.getElementById('how-it-works');
       if (!section) return;
-      
+
       const rect = section.getBoundingClientRect();
       const viewportHeight = window.innerHeight;
-      
-      const startTrigger = viewportHeight * 0.7;
-      const endTrigger = viewportHeight * 0.3;
-      
-      const totalDistance = rect.height + startTrigger - endTrigger;
-      const scrolled = startTrigger - rect.top;
-      
+      const scrollableDistance = rect.height - viewportHeight;
+
+      // Section is pinned (sticky) for its whole scrollable range. The step sequence finishes partway
+      // through that range (STEPS_FRACTION), then holds on "Operate" for the remaining scroll — so the
+      // user has to keep scrolling a bit after step 4 completes before the section releases.
+      const STEPS_FRACTION = 220 / 320;
       let progress = 0;
-      if (scrolled > 0) {
-        progress = Math.min(100, Math.max(0, (scrolled / totalDistance) * 100));
+      if (scrollableDistance > 0) {
+        const rawProgress = Math.min(1, Math.max(0, -rect.top / scrollableDistance));
+        progress = Math.min(100, Math.max(0, (rawProgress / STEPS_FRACTION) * 100));
       }
-      
-      this.setState({ scrubProgress: progress + '%' });
-      
+
+      if (progress !== this.state.scrubProgressNum) {
+        this.setState({ scrubProgress: progress + '%', scrubProgressNum: progress });
+      }
+
       const numSteps = 4;
       let active = 0;
       for (let i = 0; i < numSteps; i++) {
@@ -619,11 +647,52 @@ class Component extends DCLogic {
         this.setState({ activeSteps: active });
       }
     };
-    
+
     window.addEventListener('scroll', handleScrollScrub, { passive: true });
     this.scrubListener = handleScrollScrub;
     // Initial call
     setTimeout(handleScrollScrub, 100);
+  }
+
+  setupServicesScrub() {
+    const handleServicesScrub = () => {
+      const section = document.getElementById('services');
+      if (!section) return;
+
+      const rect = section.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
+      const scrollableDistance = rect.height - viewportHeight;
+
+      let progress = 0;
+      if (scrollableDistance > 0) {
+        progress = Math.min(1, Math.max(0, -rect.top / scrollableDistance));
+      }
+
+      // Re-arm the heading entrance as soon as the section starts peeking into view from below —
+      // well before it locks — and reset it once it scrolls back out, so it replays on each re-entry.
+      const headingEntered = rect.top <= viewportHeight * 0.85;
+
+      if (headingEntered && !this.state.headingEntered) {
+        // Guarantee the entrance is fully visible for at least its own transition length before
+        // anything downstream (fade-out, cards) is allowed to advance, no matter how fast the user
+        // scrolls straight through — otherwise a fast scroll can cut the entrance short so it never
+        // reads as an animation at all.
+        this.headingEnteredAt = Date.now();
+        clearTimeout(this._entranceGateTimer);
+        this._entranceGateTimer = setTimeout(() => {
+          this.setState({});
+        }, 1700);
+      }
+
+      if (progress !== this.state.servicesProgress || headingEntered !== this.state.headingEntered) {
+        this.setState({ servicesProgress: progress, headingEntered });
+      }
+    };
+
+    window.addEventListener('scroll', handleServicesScrub, { passive: true });
+    this.servicesScrubListener = handleServicesScrub;
+    // Initial call
+    setTimeout(handleServicesScrub, 100);
   }
 
   initParticles(canvasId, count, colorArr, speedMult) {
@@ -686,6 +755,45 @@ class Component extends DCLogic {
 
   renderVals() {
     const isMobile = this.state.isMobile;
+    const servicesPanels = 5;
+    const rawServicesProgress = this.state.servicesProgress || 0;
+
+    // Section scroll budget: 90vh heading hold + 60vh heading fade-out + 60vh cards fade-in + 400vh panel cycle = 610vh scrollable
+    const HEADING_HOLD_FRAC = 90 / 610;
+    const HEADING_FADE_END_FRAC = 150 / 610;
+    const CARDS_FADE_END_FRAC = 210 / 610;
+
+    const headingEntered = this.state.headingEntered;
+    // Hold everything downstream (fade-out, cards, panels) at the "just entered, still fully visible"
+    // point until the entrance transition has actually had time to finish playing on screen — a fast
+    // scroll otherwise reaches the fade-out threshold before the entrance animation ever renders.
+    const msSinceEntered = headingEntered ? (Date.now() - (this.headingEnteredAt || Date.now())) : 0;
+    const entranceSettled = !headingEntered || msSinceEntered >= 1700;
+    const servicesProgress = entranceSettled ? rawServicesProgress : Math.min(rawServicesProgress, HEADING_HOLD_FRAC);
+    const headingFadeT = Math.min(1, Math.max(0, (servicesProgress - HEADING_HOLD_FRAC) / (HEADING_FADE_END_FRAC - HEADING_HOLD_FRAC)));
+    // Cards only begin appearing once the heading has fully faded out — no overlap between the two.
+    const cardsFadeT = Math.min(1, Math.max(0, (servicesProgress - HEADING_FADE_END_FRAC) / (CARDS_FADE_END_FRAC - HEADING_FADE_END_FRAC)));
+
+    const headingOpacity = !headingEntered ? 0 : (1 - headingFadeT);
+    const headingTransform = !headingEntered
+      ? 'translateY(36px) scale(0.94)'
+      : `translateY(${(-headingFadeT * 26).toFixed(1)}px) scale(${(1 - headingFadeT * 0.05).toFixed(3)})`;
+    const headingFilter = !headingEntered ? 'blur(10px)' : `blur(${(headingFadeT * 6).toFixed(1)}px)`;
+    const headingFontSize = isMobile ? '36px' : '72px';
+    // Slow, deliberate entrance; once the fade-out begins, switch to a snappier scroll-linked transition.
+    const headingExitClass = headingFadeT > 0 ? 'is-exiting' : '';
+
+    const panelsOpacity = cardsFadeT;
+    const panelsTranslateY = `${((1 - cardsFadeT) * 24).toFixed(1)}px`;
+    const panelsScale = (0.97 + cardsFadeT * 0.03).toFixed(3);
+    const panelsPointerEvents = cardsFadeT > 0.9 ? 'auto' : 'none';
+
+    const panelsProgress = Math.min(1, Math.max(0, (servicesProgress - CARDS_FADE_END_FRAC) / (1 - CARDS_FADE_END_FRAC)));
+    const servicesTrackX = `-${panelsProgress * (servicesPanels - 1) * 100}vw`;
+    const activeServiceDot = Math.round(panelsProgress * (servicesPanels - 1));
+    const serviceDots = Array.from({ length: servicesPanels }, (_, i) => ({
+      bg: i === activeServiceDot ? '#7B5CF0' : 'rgba(255,255,255,0.2)'
+    }));
     const steps = [
       { num: '01', title: 'Understand', desc: "We start by mapping how your business actually operates. Not what the org chart says." },
       { num: '02', title: 'Design', desc: 'We architect a system built around your real workflows. Custom logic, nothing retrofitted.' },
@@ -730,6 +838,17 @@ class Component extends DCLogic {
       footerDir: isMobile ? 'column' : 'row',
       progressBarDisplay: isMobile ? 'none' : 'block',
       scrubProgress: this.state.scrubProgress,
+      servicesTrackX,
+      serviceDots,
+      headingOpacity,
+      headingTransform,
+      headingFilter,
+      headingFontSize,
+      headingExitClass,
+      panelsOpacity,
+      panelsTranslateY,
+      panelsScale,
+      panelsPointerEvents,
       steps,
       trustBadges: ['Discovery-First', 'Documentation Included', 'Direct Team Access']
     };
