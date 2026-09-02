@@ -1,0 +1,9 @@
+# Design-tool editor artifacts — not referenced by index.html, not needed for deployment
+.thumbnail
+_ds
+extracted_edits.txt
+parsed.txt
+parsed_edits.txt
+saved_elements.html
+ds-base.js
+image-slot.js
