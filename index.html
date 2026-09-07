@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rithera | AI Automation & Systems Agency</title>
+<link rel="icon" type="image/png" href="assets/rithera-icon-transparent.png">
+<link rel="apple-touch-icon" href="assets/rithera-icon-transparent.png">
 <script src="./support.js"></script>
 </head>
 <body>
@@ -129,11 +132,20 @@ html { scroll-behavior: smooth; }
 }
 
 .services-heading {
-  transition: opacity 1.6s cubic-bezier(0.16, 1, 0.3, 1), transform 1.6s cubic-bezier(0.16, 1, 0.3, 1), filter 1.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.4s, transform 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.4s, filter 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.4s;
   will-change: opacity, transform, filter;
 }
 .services-heading.is-exiting {
   transition-duration: 0.3s;
+  transition-delay: 0s;
+}
+.magical-text {
+  background: linear-gradient(135deg, #FFFFFF 20%, #D4C9FF 60%, #9F85F5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 0 40px rgba(159, 133, 245, 0.3);
+  letter-spacing: -0.02em;
 }
 .services-panels-layer {
   transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1), transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
@@ -158,7 +170,7 @@ html { scroll-behavior: smooth; }
     
     <!-- LEFT: Logo & Branding -->
     <div style="flex:1;display:flex;align-items:center;gap:8px;cursor:pointer;" onClick="{{ scrollToTop }}">
-      <img src="assets/rithera-icon.png?v=3" alt="Rithera" style="height:36px;width:36px;display:block;"/>
+      <img src="assets/rithera-icon-transparent.png" alt="Rithera" style="height:36px;width:36px;display:block;"/>
       <img src="assets/rithera-wordmark-dark.png" alt="Rithera" style="height:22px;display:block;"/>
     </div>
 
@@ -260,14 +272,14 @@ html { scroll-behavior: smooth; }
   </section>
 
   <!-- Services Pin Section (horizontal scroll, locked in gradient bg) -->
-  <section id="services" style="position:relative; height:710vh; background-color:#000000; background-image:radial-gradient(circle at 85% 15%, rgba(90,63,212,0.55) 0%, transparent 45%), radial-gradient(circle at 15% 85%, rgba(90,63,212,0.4) 0%, transparent 45%), radial-gradient(circle at 60% 60%, rgba(123,92,240,0.15) 0%, transparent 35%); border-top: 1px solid rgba(123,92,240,0.3);">
+  <section id="services" style="position:relative; height:670vh; background-color:#000000; background-image:radial-gradient(circle at 85% 15%, rgba(90,63,212,0.55) 0%, transparent 45%), radial-gradient(circle at 15% 85%, rgba(90,63,212,0.4) 0%, transparent 45%), radial-gradient(circle at 60% 60%, rgba(123,92,240,0.15) 0%, transparent 35%); border-top: 1px solid rgba(123,92,240,0.3);">
     <div style="position:sticky;top:0;left:0;height:100dvh;width:100%;overflow:hidden;">
 
       <!-- Intro Heading Layer -->
       <div id="services-heading" class="services-heading {{ headingExitClass }}" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 24px;pointer-events:none;opacity:{{ headingOpacity }};transform:{{ headingTransform }};filter:{{ headingFilter }};">
         <div>
           <div class="eyebrow-text" style="color:#B8A6FF;font-size:13px;">What We Build</div>
-          <h2 style="font-size:{{ headingFontSize }};margin-top:24px;color:#FFFFFF;">Five capabilities.<br/>One operational outcome.</h2>
+          <h2 class="magical-text" style="font-size:{{ headingFontSize }};margin-top:24px;line-height:1.1;">Five capabilities.<br/>One operational outcome.</h2>
         </div>
       </div>
 
@@ -519,7 +531,7 @@ html { scroll-behavior: smooth; }
     <div style="max-width:1100px;margin:0 auto;display:flex;flex-direction:{{ footerDir }};justify-content:space-between;gap:64px;padding-bottom:80px;">
       <div style="flex:1;">
         <div style="display:flex;align-items:center;gap:10px;">
-          <img src="assets/rithera-icon.png?v=3" alt="Rithera" style="height:32px;width:32px;display:block;"/>
+          <img src="assets/rithera-icon-transparent.png" alt="Rithera" style="height:32px;width:32px;display:block;"/>
           <img src="assets/rithera-wordmark-dark.png" alt="Rithera" style="height:18px;display:block;"/>
         </div>
         <p style="font-size:15px;margin-top:20px;max-width:280px;">Intelligent systems for real businesses. Stop adapting to templates.</p>
@@ -670,18 +682,34 @@ class Component extends DCLogic {
 
       // Re-arm the heading entrance as soon as the section starts peeking into view from below —
       // well before it locks — and reset it once it scrolls back out, so it replays on each re-entry.
-      const headingEntered = rect.top <= viewportHeight * 0.85;
+      const headingEntered = rect.top <= viewportHeight * 0.7;
 
       if (headingEntered && !this.state.headingEntered) {
-        // Guarantee the entrance is fully visible for at least its own transition length before
-        // anything downstream (fade-out, cards) is allowed to advance, no matter how fast the user
-        // scrolls straight through — otherwise a fast scroll can cut the entrance short so it never
-        // reads as an animation at all.
         this.headingEnteredAt = Date.now();
-        clearTimeout(this._entranceGateTimer);
-        this._entranceGateTimer = setTimeout(() => {
-          this.setState({});
-        }, 1700);
+      }
+
+      const msSinceEntered = (headingEntered || this.state.headingEntered) ? (Date.now() - (this.headingEnteredAt || Date.now())) : 0;
+      
+      // Physical scroll lock to ensure the entrance animation completes before proceeding
+      if (rect.top <= 0 && msSinceEntered < 2000) {
+        if (!this.scrollLocked) {
+          this.scrollLocked = true;
+          
+          if (!this.preventScroll) {
+            this.preventScroll = (e) => e.preventDefault();
+          }
+          
+          window.addEventListener('wheel', this.preventScroll, { passive: false });
+          window.addEventListener('touchmove', this.preventScroll, { passive: false });
+          
+          const remainingTime = 2000 - msSinceEntered;
+          setTimeout(() => {
+            this.scrollLocked = false;
+            window.removeEventListener('wheel', this.preventScroll);
+            window.removeEventListener('touchmove', this.preventScroll);
+            handleServicesScrub();
+          }, remainingTime);
+        }
       }
 
       if (progress !== this.state.servicesProgress || headingEntered !== this.state.headingEntered) {
@@ -758,28 +786,26 @@ class Component extends DCLogic {
     const servicesPanels = 5;
     const rawServicesProgress = this.state.servicesProgress || 0;
 
-    // Section scroll budget: 90vh heading hold + 60vh heading fade-out + 60vh cards fade-in + 400vh panel cycle = 610vh scrollable
-    const HEADING_HOLD_FRAC = 90 / 610;
-    const HEADING_FADE_END_FRAC = 150 / 610;
-    const CARDS_FADE_END_FRAC = 210 / 610;
+    // Section scroll budget: 120vh heading hold + 60vh heading fade-out + 20vh cards fade-in + ~370vh panel cycle
+    const HEADING_HOLD_FRAC = 120 / 570;
+    const HEADING_FADE_END_FRAC = 180 / 570;
+    const CARDS_FADE_END_FRAC = 200 / 570;
 
     const headingEntered = this.state.headingEntered;
-    // Hold everything downstream (fade-out, cards, panels) at the "just entered, still fully visible"
-    // point until the entrance transition has actually had time to finish playing on screen — a fast
-    // scroll otherwise reaches the fade-out threshold before the entrance animation ever renders.
-    const msSinceEntered = headingEntered ? (Date.now() - (this.headingEnteredAt || Date.now())) : 0;
-    const entranceSettled = !headingEntered || msSinceEntered >= 1700;
-    const servicesProgress = entranceSettled ? rawServicesProgress : Math.min(rawServicesProgress, HEADING_HOLD_FRAC);
+    
+    // Remove the artificial time-based lock and let the physical scroll position dictate progress.
+    // This prevents sudden jumps to later cards if the user scrolls quickly during the text entrance.
+    const servicesProgress = rawServicesProgress;
     const headingFadeT = Math.min(1, Math.max(0, (servicesProgress - HEADING_HOLD_FRAC) / (HEADING_FADE_END_FRAC - HEADING_HOLD_FRAC)));
     // Cards only begin appearing once the heading has fully faded out — no overlap between the two.
     const cardsFadeT = Math.min(1, Math.max(0, (servicesProgress - HEADING_FADE_END_FRAC) / (CARDS_FADE_END_FRAC - HEADING_FADE_END_FRAC)));
 
     const headingOpacity = !headingEntered ? 0 : (1 - headingFadeT);
     const headingTransform = !headingEntered
-      ? 'translateY(36px) scale(0.94)'
+      ? 'translateY(60px) scale(0.9)'
       : `translateY(${(-headingFadeT * 26).toFixed(1)}px) scale(${(1 - headingFadeT * 0.05).toFixed(3)})`;
-    const headingFilter = !headingEntered ? 'blur(10px)' : `blur(${(headingFadeT * 6).toFixed(1)}px)`;
-    const headingFontSize = isMobile ? '36px' : '72px';
+    const headingFilter = !headingEntered ? 'blur(20px)' : `blur(${(headingFadeT * 6).toFixed(1)}px)`;
+    const headingFontSize = isMobile ? '48px' : '96px';
     // Slow, deliberate entrance; once the fade-out begins, switch to a snappier scroll-linked transition.
     const headingExitClass = headingFadeT > 0 ? 'is-exiting' : '';
 
